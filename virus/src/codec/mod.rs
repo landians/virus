@@ -1,7 +1,7 @@
-
 use bytes::BytesMut;
+use std::marker::PhantomData;
+use prost::Message;
 use std::io;
-use marker::PhantomData;
 
 /// Trait used to encode object as bytes.
 pub trait Encoder {
@@ -14,7 +14,6 @@ pub trait Encoder {
     /// Encodes a message into the buffer.
     fn encode(&mut self, item: Self::Item, dst: &mut BytesMut) -> Result<(), Self::Error>;
 }
-
 
 /// Trait used to decode object from bytes.
 pub trait Decoder {
@@ -31,3 +30,18 @@ pub trait Decoder {
 #[derive(Debug, Clone)]
 pub struct DefaultCodec<T>(PhantomData<T>);
 
+impl<T: Message> Encoder for DefaultCodec<T> {
+    type Item = T;
+    type Error = EncodeError;
+    fn encode(&mut self, item: Self::Item, dst: &mut BytesMut) -> Result<(), Self::Error> {
+        todo!()
+    }
+}
+
+impl<T: Message> Decoder for DefaultCodec<T> {
+    type Item = T;
+    type Error = DecodeError;
+    fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
+        todo!()
+    }
+}
