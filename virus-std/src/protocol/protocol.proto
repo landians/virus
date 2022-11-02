@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package protocol;
+
+message MetaKeyValue {
+     string key = 1;
+    oneof value {
+        string string = 2;
+        bytes binary = 3;
+        int64 integer = 4;
+    }
+}
+
+// "VIRUS" + meta_length + message_length + meta + message
+message MetaData {
+    int32 role = 1;
+    string service_name = 2;
+    string method_name = 3;
+    uint64 seq_id = 4;
+    string virus_version = 5;
+    int32 compress_type = 6;
+    int32 serialize_type = 7;
+    int32 message_type = 8;
+    int32 origin_size = 9;
+    int32 compressed_size = 10;
+    repeated MetaKeyValue values = 11;
+}

@@ -6,3 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+virus = { path = "../virus"}
+bytes = "1"
+prost = "0.10"
+thiserror = "1.0.30"
+
+[build-dependencies]
+prost-build = "0.10" 
