@@ -1,6 +1,4 @@
 
-pub mod context;
-
 pub mod net;
 
 pub mod discovery;
