@@ -25,3 +25,8 @@ message MetaData {
     int32 compressed_size = 10;
     repeated MetaKeyValue values = 11;
 }
+
+message Demo {
+    string field1 = 1;
+    int32 field2 = 2;
+}

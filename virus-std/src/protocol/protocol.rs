@@ -46,3 +46,11 @@ pub struct MetaData {
     #[prost(message, repeated, tag="11")]
     pub values: ::prost::alloc::vec::Vec<MetaKeyValue>,
 }
+#[derive(PartialOrd)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Demo {
+    #[prost(string, tag="1")]
+    pub field1: ::prost::alloc::string::String,
+    #[prost(int32, tag="2")]
+    pub field2: i32,
+}
