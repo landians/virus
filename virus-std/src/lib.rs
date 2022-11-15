@@ -12,7 +12,7 @@ mod client;
 
 mod service;
 
-mod message;
+mod frame;
 
 mod context;
 
