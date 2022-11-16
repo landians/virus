@@ -54,3 +54,9 @@ pub struct Demo {
     #[prost(int32, tag="2")]
     pub field2: i32,
 }
+#[derive(PartialOrd)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Error {
+    #[prost(string, tag="1")]
+    pub detail: ::prost::alloc::string::String,
+}

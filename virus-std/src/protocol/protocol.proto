@@ -30,3 +30,7 @@ message Demo {
     string field1 = 1;
     int32 field2 = 2;
 }
+
+message Error {
+    string detail = 1;
+}

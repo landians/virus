@@ -37,7 +37,6 @@ where
     }
 }
 
-
 pub(crate) fn encode<T>(msg: Message<T>, dst: &mut bytes::BytesMut) -> Result<(), VirusError>
 where
     T: ProtoMessage,
@@ -64,7 +63,6 @@ pub(crate) fn decode<T>(src: &mut bytes::BytesMut) -> Result<Message<T>, VirusEr
 where
     T: ProtoMessage + Default,
 {
-
     if Some(&b"virus"[..]) != src.get(0..5) {
         return Err("invalid protocol".into());
     }
@@ -98,7 +96,7 @@ mod tests {
     };
 
     use super::Message;
-    use crate::frame::{encode, decode};
+    use crate::frame::{decode, encode};
     use bytes::BytesMut;
 
     #[test]
@@ -108,7 +106,7 @@ mod tests {
         let metadata = MetaData {
             role: Role::Client as i32,
             service_name: "hello".to_string(),
-            method_name:"ping".to_string(),
+            method_name: "ping".to_string(),
             ..Default::default()
         };
 
@@ -126,5 +124,25 @@ mod tests {
         let v2: Message<Demo> = decode(&mut buf).unwrap();
 
         println!("{:?}", v2);
+    }
+
+    #[test]
+    fn test_message_method() {
+        let metadata = MetaData {
+            role: Role::Client as i32,
+            service_name: "hello".to_string(),
+            method_name: "ping".to_string(),
+            ..Default::default()
+        };
+
+        let body = Demo {
+            field1: "David".to_string(),
+            field2: 17,
+        };
+
+        let v1 = Message::new(metadata, body);
+
+        println!("body length: {:?}", v1.body_length());
+        println!("meta length: {:?}", v1.meta_length());
     }
 }
