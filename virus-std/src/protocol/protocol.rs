@@ -1,26 +1,4 @@
-#[derive(PartialOrd)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MetaKeyValue {
-    #[prost(string, tag="1")]
-    pub key: ::prost::alloc::string::String,
-    #[prost(oneof="meta_key_value::Value", tags="2, 3, 4")]
-    pub value: ::core::option::Option<meta_key_value::Value>,
-}
-/// Nested message and enum types in `MetaKeyValue`.
-pub mod meta_key_value {
-    #[derive(PartialOrd)]
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Value {
-        #[prost(string, tag="2")]
-        String(::prost::alloc::string::String),
-        #[prost(bytes, tag="3")]
-        Binary(::prost::bytes::Bytes),
-        #[prost(int64, tag="4")]
-        Integer(i64),
-    }
-}
 /// "VIRUS" + meta_length + message_length + meta + message
-#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MetaData {
     #[prost(int32, tag="1")]
@@ -43,10 +21,9 @@ pub struct MetaData {
     pub origin_size: i32,
     #[prost(int32, tag="10")]
     pub compressed_size: i32,
-    #[prost(message, repeated, tag="11")]
-    pub values: ::prost::alloc::vec::Vec<MetaKeyValue>,
+    #[prost(map="string, string", tag="11")]
+    pub values: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
-#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Demo {
     #[prost(string, tag="1")]
@@ -54,7 +31,6 @@ pub struct Demo {
     #[prost(int32, tag="2")]
     pub field2: i32,
 }
-#[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Error {
     #[prost(string, tag="1")]

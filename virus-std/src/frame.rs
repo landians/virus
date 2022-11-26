@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use crate::protocol::{protocol::*, MessageType, CompressType, SerializeType, RoleType};
 
 use prost::Message as ProtoMessage;
@@ -54,6 +56,16 @@ where
     #[inline]
     pub fn role_type(&self) -> RoleType {
         self.metadata.role.into()
+    }
+
+    #[inline]
+    pub fn get(&self, k: &String) -> Option<&String> {
+        self.metadata.values.get(k)
+    }
+
+    #[inline]
+    pub fn set(&mut self, k: String, v: String) -> Option<String>{
+        self.metadata.values.insert(k, v)
     }
 }
 

@@ -6,15 +6,15 @@ pub mod bincode;
 mod tests {
     use virus::codec::{Decoder, Encoder};
 
-    use crate::protocol::protocol::{self, MetaKeyValue};
+    use crate::protocol::protocol::*;
 
     use crate::codec::proto::{ProtoDecoder, ProtoEncoder};
 
     #[test]
     fn test_proto_encode_decode() {
-        let v1 = protocol::MetaKeyValue {
-            key: "key".to_string(),
-            value: Some(protocol::meta_key_value::Value::String("value".to_string())),
+        let v1 = Demo {
+            field1: "a".to_string(),
+            field2: 2,
         };
 
         let mut encoder = ProtoEncoder::default();
@@ -27,13 +27,10 @@ mod tests {
 
         let value = decoder.decode(&mut bytes_value).unwrap();
 
-        let v2: MetaKeyValue = value.unwrap();
+        let v2: Demo = value.unwrap();
 
-        assert_eq!(v2.key, "key".to_string());
-        assert_eq!(
-            v2.value,
-            Some(protocol::meta_key_value::Value::String("value".to_string()))
-        );
+        assert_eq!(v2.field1, "a".to_string());
+        assert_eq!(v2.field2, 2);
     }
 
     use serde::{Deserialize, Serialize};

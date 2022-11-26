@@ -1,7 +1,6 @@
-use std::any::Any;
 
 use crate::{
-    client::Client, error::VirusError, frame::Message, handler::HandlerFunc, protocol::MessageType,
+    client::Client, frame::Message, handler::HandlerFunc, error::VirusError, protocol::protocol::*,
 };
 
 use prost::Message as ProtoMessage;
@@ -9,7 +8,7 @@ use prost::Message as ProtoMessage;
 pub struct Context<T> {
     client: Client,
     message: Message<T>,
-    index: usize,
+    index: i8,
     handles: Vec<HandlerFunc<T>>,
 }
 
@@ -21,22 +20,37 @@ where
         Context {
             client: client,
             message: message,
-            index: 0,
+            index: -1,
             handles: handlers,
         }
     }
 
     #[inline]
     pub fn abort(&mut self) {
-        self.index = usize::MAX
+        self.index = i8::MAX
     }
     
     #[inline]
     pub fn next(&mut self) {
-        let i = self.index;
-        if i < self.handles.len()  {
+        self.index += 1;
+        while (self.index as usize) < self.handles.len() {
             self.index += 1;
-            self.handles[i](self)
+            self.handles[self.index as usize](self)
         }
+    }
+
+    #[inline]
+    pub fn get(&self, k: &String) -> Option<&String> {
+        self.message.get(k)
+    }
+
+    #[inline]
+    pub fn set(&mut self, k: String, v: String) -> Option<String> {
+        self.message.set(k, v)
+    }
+
+    #[inline]
+    pub fn write(&self) -> Result<u32, VirusError> {
+        todo!()
     }
 }

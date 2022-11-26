@@ -2,15 +2,6 @@ syntax = "proto3";
 
 package protocol;
 
-message MetaKeyValue {
-     string key = 1;
-    oneof value {
-        string string = 2;
-        bytes binary = 3;
-        int64 integer = 4;
-    }
-}
-
 // "VIRUS" + meta_length + message_length + meta + message
 message MetaData {
     int32 role = 1;
@@ -23,7 +14,7 @@ message MetaData {
     int32 message_type = 8;
     int32 origin_size = 9;
     int32 compressed_size = 10;
-    repeated MetaKeyValue values = 11;
+    map<string, string> values = 11;
 }
 
 message Demo {
