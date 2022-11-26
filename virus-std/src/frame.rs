@@ -1,4 +1,4 @@
-use crate::protocol::protocol::*;
+use crate::protocol::{protocol::*, MessageType, CompressType, SerializeType, RoleType};
 
 use prost::Message as ProtoMessage;
 
@@ -34,6 +34,26 @@ where
     #[inline]
     pub fn meta_length(&self) -> usize {
         self.metadata.encoded_len()
+    }
+
+    #[inline]
+    pub fn compress_type(&self) -> CompressType {
+        self.metadata.compress_type.into()
+    }
+
+    #[inline]
+    pub fn serialize_type(&self) -> SerializeType {
+        self.metadata.serialize_type.into()
+    }
+
+    #[inline]
+    pub fn message_type(&self) -> MessageType {
+        self.metadata.message_type.into()
+    }
+
+    #[inline]
+    pub fn role_type(&self) -> RoleType {
+        self.metadata.role.into()
     }
 }
 
@@ -92,7 +112,7 @@ where
 mod tests {
     use crate::protocol::{
         protocol::{Demo, MetaData},
-        Role,
+        RoleType,
     };
 
     use super::Message;
@@ -104,7 +124,7 @@ mod tests {
         let mut buf = BytesMut::with_capacity(256);
 
         let metadata = MetaData {
-            role: Role::Client as i32,
+            role: RoleType::RoleClient as i32,
             service_name: "hello".to_string(),
             method_name: "ping".to_string(),
             ..Default::default()
@@ -129,7 +149,7 @@ mod tests {
     #[test]
     fn test_message_method() {
         let metadata = MetaData {
-            role: Role::Client as i32,
+            role: RoleType::RoleClient as i32,
             service_name: "hello".to_string(),
             method_name: "ping".to_string(),
             ..Default::default()
