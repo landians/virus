@@ -1,6 +1,5 @@
-
 use crate::{
-    client::Client, frame::Message, handler::HandlerFunc, error::VirusError, protocol::protocol::*,
+    client::Client, error::VirusError, frame::Message, handler::HandlerFunc
 };
 
 use prost::Message as ProtoMessage;
@@ -29,7 +28,7 @@ where
     pub fn abort(&mut self) {
         self.index = i8::MAX
     }
-    
+
     #[inline]
     pub fn next(&mut self) {
         self.index += 1;

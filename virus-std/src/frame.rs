@@ -1,6 +1,4 @@
-use std::hash::Hash;
-
-use crate::protocol::{protocol::*, MessageType, CompressType, SerializeType, RoleType};
+use crate::protocol::{protocol::*, CompressType, MessageType, RoleType, SerializeType};
 
 use prost::Message as ProtoMessage;
 
@@ -64,7 +62,7 @@ where
     }
 
     #[inline]
-    pub fn set(&mut self, k: String, v: String) -> Option<String>{
+    pub fn set(&mut self, k: String, v: String) -> Option<String> {
         self.metadata.values.insert(k, v)
     }
 }

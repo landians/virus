@@ -1,3 +1,3 @@
 use crate::context::Context;
 
-pub type HandlerFunc<T> = fn (&mut Context<T>);
+pub type HandlerFunc<T> = fn(&mut Context<T>);

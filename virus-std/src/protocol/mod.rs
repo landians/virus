@@ -78,7 +78,6 @@ impl From<i32> for RoleType {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::{CompressType, MessageType};

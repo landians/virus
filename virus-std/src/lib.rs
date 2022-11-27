@@ -1,5 +1,3 @@
-
-
 mod codec;
 
 mod error;
@@ -19,7 +17,3 @@ mod context;
 mod connection;
 
 mod handler;
-
-
-
-
