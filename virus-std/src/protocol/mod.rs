@@ -92,3 +92,4 @@ mod tests {
         assert_eq!(MessageType::MessageNotify, 3.into())
     }
 }
+

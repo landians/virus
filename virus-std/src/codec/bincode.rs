@@ -9,7 +9,7 @@ pub struct BincodeEncoder<T>(PhantomData<T>);
 
 impl<T> Encoder for BincodeEncoder<T>
 where
-    T: serde::Serialize,
+    T: serde::Serialize + Sized,
 {
     type Item = T;
     type Error = VirusError;

@@ -1,5 +1,4 @@
 use std::{
-    collections::HashMap,
     future::Future,
     sync::{atomic::AtomicU32, Arc},
     time::Duration,
@@ -13,11 +12,11 @@ use tokio::{
 
 use tracing::{error, info, instrument};
 
-use crate::{connection::Connection, error::VirusError, service::Service};
+use crate::{connection::Connection, error::VirusError};
 
 const MAX_CONNECTIONS: usize = 4 * 1024;
 
-pub struct Server<T> {
+pub struct Server {
     /// TCP listener supplied by the `run` caller.
     listener: TcpListener,
 
@@ -38,7 +37,7 @@ pub struct Server<T> {
     accepted_connections: AtomicU32,
 
     /// A list of services registered to the server
-    services: HashMap<String, Service<T>>,
+    // services: HashMap<String, Service<T>>,
 
     /// Broadcasts a shutdown signal to all active connections.
     ///
@@ -90,7 +89,7 @@ pub async fn run(listener: TcpListener, shutdown: impl Future) {
         max_connections: Arc::new(Semaphore::new(MAX_CONNECTIONS)),
         curr_connections: AtomicU32::new(0),
         accepted_connections: AtomicU32::new(0),
-        services: HashMap::new(),
+        // services: HashMap::new(),
         notify_shutdown,
         shutdown_complete_tx,
         shutdown_complete_rx,
@@ -146,7 +145,7 @@ pub async fn run(listener: TcpListener, shutdown: impl Future) {
     let _ = shutdown_complete_rx.recv().await;
 }
 
-impl<T> Server<T> {
+impl Server {
     /// Run the server
     ///
     /// Listen for inbound connections. For each inbound connection, spawn a

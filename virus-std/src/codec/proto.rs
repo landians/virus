@@ -33,7 +33,7 @@ pub struct ProtoDecoder<T>(PhantomData<T>);
 
 impl<T> Decoder for ProtoDecoder<T>
 where
-    T: Message + Default,
+    T: Message + Default + Sized,
 {
     type Item = T;
     type Error = VirusError;
