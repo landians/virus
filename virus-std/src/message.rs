@@ -1,10 +1,12 @@
-use crate::protocol::{protocol::*, CompressType, MessageType, RoleType, SerializeType};
+use crate::protocol::{protocol::*, CompressType, MessageType, RoleType};
 
 use prost::Message as ProtoMessage;
 
 use bytes::{Buf, BufMut};
 
 use crate::error::VirusError;
+
+const MAX_MESSAGE_SIZE: usize = 16 * 1024 * 1024;
 
 #[derive(Debug, Clone)]
 pub struct Message<T> {
@@ -42,11 +44,6 @@ where
     }
 
     #[inline]
-    pub fn serialize_type(&self) -> SerializeType {
-        self.metadata.serialize_type.into()
-    }
-
-    #[inline]
     pub fn message_type(&self) -> MessageType {
         self.metadata.message_type.into()
     }
@@ -75,12 +72,17 @@ where
     dst.put(&b"virus"[..]);
 
     // metadata length: 4bytes
-    let meta_length = msg.metadata.encoded_len();
-    dst.put_u32(meta_length as u32);
+    let meta_len = msg.metadata.encoded_len();
+    dst.put_u32(meta_len as u32);
 
     // body length: 5bytes
-    let body_length = msg.body.encoded_len();
-    dst.put_u32(body_length as u32);
+    let body_len = msg.body.encoded_len();
+    dst.put_u32(body_len as u32);
+
+    // check body length
+    if body_len > MAX_MESSAGE_SIZE {
+        return Err("The body length is too long".into());
+    }
 
     msg.metadata.encode(dst)?;
 
@@ -89,7 +91,7 @@ where
     Ok(())
 }
 
-pub(crate) fn decode<T>(src: &mut bytes::BytesMut) -> Result<Message<T>, VirusError>
+pub(crate) fn decode<T>(src: &mut bytes::BytesMut) -> Result<Option<Message<T>>, VirusError>
 where
     T: ProtoMessage + Default,
 {
@@ -99,14 +101,32 @@ where
 
     src.advance(5);
 
-    let meta_len = src.get_u32();
+    let meta_len = src.get_u32() as usize;
     if meta_len == 0 {
         return Err("invalid metadata length".into());
     }
 
-    let body_len = src.get_u32();
+    let body_len = src.get_u32() as usize;
     if body_len == 0 {
         return Err("invalid body length".into());
+    }
+
+    // check body length
+    if body_len > MAX_MESSAGE_SIZE {
+        return Err("The body length is too long".into());
+    }
+
+    // check whether remaining buf is enough
+    if src.len() < meta_len + body_len {
+        // The full string has not yet arrived.
+        //
+        // We reserve more space in the buffer. This is not strictly
+        // necessary, but is a good idea performance-wise.
+        src.reserve(13 + meta_len + body_len - src.len());
+
+        // We inform the Framed that we need more bytes to form the next
+        // frame.
+        return Ok(None);
     }
 
     let metadata = MetaData::decode(&src[..meta_len as usize])?;
@@ -115,9 +135,8 @@ where
 
     let msg = Message::new(metadata, body);
 
-    Ok(msg)
+    Ok(Some(msg))
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -127,7 +146,7 @@ mod tests {
     };
 
     use super::Message;
-    use crate::frame::{decode, encode};
+    use crate::message::{decode, encode};
     use bytes::BytesMut;
 
     #[test]
@@ -152,7 +171,7 @@ mod tests {
 
         println!("encode message length: {}", buf.len());
 
-        let v2: Message<Demo> = decode(&mut buf).unwrap();
+        let v2: Option<Message<Demo>> = decode(&mut buf).unwrap();
 
         println!("{:?}", v2);
     }

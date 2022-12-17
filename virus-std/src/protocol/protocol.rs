@@ -14,14 +14,12 @@ pub struct MetaData {
     #[prost(int32, tag="6")]
     pub compress_type: i32,
     #[prost(int32, tag="7")]
-    pub serialize_type: i32,
-    #[prost(int32, tag="8")]
     pub message_type: i32,
-    #[prost(int32, tag="9")]
+    #[prost(int32, tag="8")]
     pub origin_size: i32,
-    #[prost(int32, tag="10")]
+    #[prost(int32, tag="9")]
     pub compressed_size: i32,
-    #[prost(map="string, string", tag="11")]
+    #[prost(map="string, string", tag="10")]
     pub values: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

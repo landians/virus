@@ -9,13 +9,6 @@ pub enum CompressType {
     CompressGzip = 1,
 }
 
-#[allow(unused)]
-#[derive(Debug, PartialEq, PartialOrd)]
-pub enum SerializeType {
-    SerializeNone = 0,
-    SerializeJson = 1,
-    SerializeProtobuf = 2,
-}
 
 #[allow(unused)]
 #[derive(Debug, PartialEq, PartialOrd)]
@@ -41,16 +34,6 @@ impl From<i32> for CompressType {
         match value {
             1 => CompressType::CompressGzip,
             _ => CompressType::CompressNone,
-        }
-    }
-}
-
-impl From<i32> for SerializeType {
-    fn from(value: i32) -> Self {
-        match value {
-            1 => SerializeType::SerializeJson,
-            2 => SerializeType::SerializeProtobuf,
-            _ => SerializeType::SerializeNone,
         }
     }
 }

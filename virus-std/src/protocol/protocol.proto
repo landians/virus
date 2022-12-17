@@ -10,11 +10,10 @@ message MetaData {
     uint64 seq_id = 4;
     string virus_version = 5;
     int32 compress_type = 6;
-    int32 serialize_type = 7;
-    int32 message_type = 8;
-    int32 origin_size = 9;
-    int32 compressed_size = 10;
-    map<string, string> values = 11;
+    int32 message_type = 7;
+    int32 origin_size = 8;
+    int32 compressed_size = 9;
+    map<string, string> values = 10;
 }
 
 message Demo {

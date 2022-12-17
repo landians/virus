@@ -1,5 +1,3 @@
-mod codec;
-
 mod error;
 
 mod protocol;
@@ -10,7 +8,7 @@ mod client;
 
 mod service;
 
-mod frame;
+mod message;
 
 mod connection;
 
