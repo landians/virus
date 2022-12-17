@@ -95,17 +95,25 @@ pub(crate) fn decode<T>(src: &mut bytes::BytesMut) -> Result<Option<Message<T>>,
 where
     T: ProtoMessage + Default,
 {
+    // no enough data to decode
+    if src.len() < 13 {
+        return Ok(None)
+    }
+
+    // check "virus": 5 bytes
     if Some(&b"virus"[..]) != src.get(0..5) {
         return Err("invalid protocol".into());
     }
 
     src.advance(5);
 
+    // get metadata length
     let meta_len = src.get_u32() as usize;
     if meta_len == 0 {
         return Err("invalid metadata length".into());
     }
 
+    // get body length
     let body_len = src.get_u32() as usize;
     if body_len == 0 {
         return Err("invalid body length".into());
@@ -171,7 +179,9 @@ mod tests {
 
         println!("encode message length: {}", buf.len());
 
-        let v2: Option<Message<Demo>> = decode(&mut buf).unwrap();
+        let mut src = BytesMut::with_capacity(23);
+
+        let v2: Option<Message<Demo>> = decode(&mut src).unwrap();
 
         println!("{:?}", v2);
     }
