@@ -8,7 +8,8 @@ mod client;
 
 mod service;
 
-mod message;
+mod frame;
 
 mod connection;
 
+mod codec;
