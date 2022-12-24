@@ -11,9 +11,7 @@ message MetaData {
     string virus_version = 5;
     int32 compress_type = 6;
     int32 message_type = 7;
-    int32 origin_size = 8;
-    int32 compressed_size = 9;
-    map<string, string> values = 10;
+    map<string, string> values = 8;
 }
 
 message Demo {
