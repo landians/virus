@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+#![allow(unused_variables)]
+
 use std::{
     future::Future,
     sync::{atomic::AtomicU32, Arc},
@@ -259,6 +262,32 @@ impl Handler {
     /// it reaches a safe state, at which point it is terminated.
     #[instrument(skip(self))]
     async fn run(&mut self) -> Result<(), VirusError> {
+        // As long as the shutdown signal has not been received, try to read a
+        // new request frame.
+        while !self.shutdown.is_shutdown() {
+            // While reading a request frame, also listen for the shutdown
+            // signal.
+            let maybe_frame = tokio::select! {
+                res = self.connection.read_frame() => res?,
+                _ = self.shutdown.recv() => {
+                    // If a shutdown signal is received, return from `run`.
+                    // This will result in the task terminating.
+                    return Ok(());
+                }
+            };
+
+            // If `None` is returned from `read_frame()` then the peer closed
+            // the socket. There is no further work to do and the task can be
+            // terminated.
+            let frame = match maybe_frame {
+                Some(frame) => frame,
+                None => return Ok(()),
+            };
+
+
+            // todo: Then decode frame, and select service to run.
+        }
+
         Ok(())
     }
 }

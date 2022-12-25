@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+#![allow(unused_variables)]
+
 use std::io::Cursor;
 
 use bytes::{Buf, BufMut, BytesMut};
@@ -56,9 +59,24 @@ impl Frame {
     pub fn len(&self) -> usize {
         5 + 4 + 4 + self.metadata.encoded_len() + self.payload.len()
     }
+
+    #[inline]
+    pub fn compress_type(&self) -> CompressType {
+        self.metadata.compress_type.into()
+    }
+
+    #[inline]
+    pub fn message_type(&self) -> MessageType {
+        self.metadata.message_type.into()
+    }
+
+    #[inline]
+    pub fn role_type(&self) -> RoleType {
+        self.metadata.role.into()
+    }
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct FrameCodec {}
 
 impl Encoder for FrameCodec {
@@ -92,8 +110,6 @@ impl Encoder for FrameCodec {
             item.metadata_len(),
             item.payload_len()
         );
-
-        // virus\0\0\0\u{1a}\0\0\0\u{b}\u{8}\u{1}\u{12}\u{4}demo\u{1a}\u{7}greeter \u{1}*\u{5}0.0.1Hello World
 
         Ok(())
     }
